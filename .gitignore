@@ -1,0 +1,14 @@
+node_modules/
+dist/
+*.tsbuildinfo
+.DS_Store
+.env
+*.log
+
+# Development/test artifacts
+test-runner.js
+test-runner.mjs
+test/
+test-project/
+specs/
+API-MIND.md

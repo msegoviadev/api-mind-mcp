@@ -1,0 +1,56 @@
+{
+  "name": "@msegoviadev/api-mind-mcp",
+  "version": "0.1.0",
+  "description": "MCP server for API discovery from .mind spec files",
+  "main": "./dist/index.js",
+  "bin": {
+    "api-mind-mcp": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "prepare": "npm run build",
+    "test": "node --experimental-strip-types test/test.ts"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0"
+  },
+  "keywords": [
+    "mcp",
+    "api",
+    "discovery",
+    "openapi",
+    "model-context-protocol",
+    "claude-code",
+    "llm"
+  ],
+  "author": {
+    "name": "msegoviadev",
+    "email": "marcos@msegovia.dev"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/msegoviadev/api-mind-mcp"
+  },
+  "bugs": {
+    "url": "https://github.com/msegoviadev/api-mind-mcp/issues"
+  },
+  "homepage": "https://github.com/msegoviadev/api-mind-mcp#readme",
+  "files": [
+    "dist",
+    "README.md",
+    "setup-mcp.sh.example"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
+}

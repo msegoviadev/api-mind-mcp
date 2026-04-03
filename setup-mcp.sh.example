@@ -1,0 +1,41 @@
+#!/bin/bash
+# Example setup script for api-mind MCP server
+# Run this once after cloning the repository
+
+set -e
+
+PROJECT_ROOT="$(cd "$(dirname "$0")" && pwd)"
+SPECS_DIR="${PROJECT_ROOT}/specs"
+
+echo "Setting up api-mind MCP server..."
+echo "Project root: ${PROJECT_ROOT}"
+echo "Specs directory: ${SPECS_DIR}"
+
+# Check if specs directory exists
+if [ ! -d "$SPECS_DIR" ]; then
+  echo "Creating specs directory..."
+  mkdir -p "$SPECS_DIR"
+fi
+
+# Check for .mind files
+MIND_FILES=$(find "$SPECS_DIR" -name "*.mind" 2>/dev/null | wc -l | tr -d ' ')
+if [ "$MIND_FILES" -eq 0 ]; then
+  echo ""
+  echo "⚠️  No .mind files found in $SPECS_DIR"
+  echo "Generate them with: spec-mind sync --no-notation ./specs/"
+  echo ""
+fi
+
+# Add MCP server to Claude Code
+echo "Adding api-mind to Claude Code..."
+claude mcp add --transport stdio --scope project api-mind \
+  --env SPECS_DIR="$SPECS_DIR" \
+  -- npx -y @msegoviadev/api-mind-mcp
+
+echo ""
+echo "✓ api-mind configured successfully!"
+echo ""
+echo "Next steps:"
+echo "1. Add OpenAPI specs to: ${SPECS_DIR}/"
+echo "2. Generate .mind files: spec-mind sync --no-notation ./specs/"
+echo "3. Restart Claude Code"

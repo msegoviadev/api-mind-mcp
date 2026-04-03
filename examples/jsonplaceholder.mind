@@ -1,0 +1,24 @@
+# Source: /Users/marcos/workspace/api-mind-test/specs/jsonplaceholder.yaml | Generated: 2026-03-29T11:21:39.730Z | Spec version: 1.0
+# API: JSONPlaceholder — https://jsonplaceholder.typicode.com/
+
+## (untagged)
+GET /posts
+  ?userId:int, ?title
+  -> 200: post[]
+
+POST /posts
+  body: post
+  -> 201: post
+
+GET /posts/{post-id}
+  -> 200: post
+
+PATCH /posts/{post-id}
+  body: post
+  -> 200: post
+
+DELETE /posts/{post-id}
+  -> 200
+
+## Schemas
+post: {userId?:int, id?:int, title?, body?}
