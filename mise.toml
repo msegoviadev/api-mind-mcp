@@ -1,0 +1,8 @@
+[tools]
+node = "20"
+npm = "10"
+
+[env]
+_.path = [
+    "{{config_root}}/node_modules/.bin",
+]

@@ -16,6 +16,7 @@
   },
   "devDependencies": {
     "@types/node": "^20.0.0",
+    "semver": "^7.7.4",
     "typescript": "^5.0.0"
   },
   "keywords": [
@@ -46,7 +47,8 @@
     "setup-mcp.sh.example"
   ],
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "provenance": true
   },
   "engines": {
     "node": ">=18.0.0"

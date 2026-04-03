@@ -11,4 +11,7 @@ test-runner.mjs
 test/
 test-project/
 specs/
-API-MIND.md
+
+# mise
+.mise/
+!.mise/tasks/

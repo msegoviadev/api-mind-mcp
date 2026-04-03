@@ -10,6 +10,8 @@ on:
         options:
           - latest
           - next
+  repository_dispatch:
+    types: [publish-package]
 
 permissions:
   id-token: write
@@ -21,25 +23,27 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
+      - uses: jdx/mise-action@d6e32c1796099e0f1f3ac741c220a8b7eae9e5dd
         with:
-          node-version: '20'
-          registry-url: 'https://registry.npmjs.org'
+          install: true
+          cache: true
+          experimental: true
 
-      - name: Install dependencies
-        run: npm ci
+      - name: Setup
+        run: mise run setup
 
       - name: Build
-        run: npm run build
+        run: mise run build
+
+      - id: inputs
+        uses: simenandre/setup-inputs@v1
 
       - name: Publish to npm with OIDC
         run: |
-          TAG="${{ github.event.inputs.tag }}"
+          TAG="${{ steps.inputs.outputs.tag }}"
           if [ -z "$TAG" ]; then
             TAG="latest"
           fi
 
           echo "Publishing with tag: $TAG"
-          npm publish --access public --provenance --tag "$TAG"
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          mise run publish --tag "$TAG"
