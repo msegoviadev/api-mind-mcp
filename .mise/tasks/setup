@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+#MISE description="Setting up project"
+
+echo ""
+echo "🍜 Setting up project"
+echo ""
+
+npm ci
+
+echo ""
+echo "👍 Done"
+echo ""
