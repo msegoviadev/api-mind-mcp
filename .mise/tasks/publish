@@ -25,13 +25,13 @@ if [ "${usage_tag}" = "next" ]; then
 fi
 
 # Determine if we should use provenance
-PROVENANCE_FLAG=""
 if [ -z "$GITHUB_ACTIONS" ]; then
   # Local development: disable provenance (fails without CI provider context)
   PROVENANCE_FLAG="--no-provenance"
   echo " > provenance: disabled (local environment)"
 else
   # GitHub Actions: enable provenance (OIDC will handle it automatically)
+  PROVENANCE_FLAG="--provenance"
   echo " > provenance: enabled (GitHub Actions with OIDC)"
 fi
 
