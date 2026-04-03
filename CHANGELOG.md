@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.3](https://github.com/msegoviadev/api-mind-mcp/compare/v0.2.2...v0.2.3) (2026-04-03)
+
+
+### Bug Fixes
+
+* upgrade to npm 11.6.3 for OIDC provenance support ([826d4fd](https://github.com/msegoviadev/api-mind-mcp/commit/826d4fd26ebcb4fb5d767b669be5eaee40974bd5))
+
 ## [0.2.2](https://github.com/msegoviadev/api-mind-mcp/compare/v0.2.1...v0.2.2) (2026-04-03)
 
 
