@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.1](https://github.com/msegoviadev/api-mind-mcp/compare/v0.2.0...v0.2.1) (2026-04-03)
+
+
+### Bug Fixes
+
+* track .mise/tasks/ in git for CI ([8e998a5](https://github.com/msegoviadev/api-mind-mcp/commit/8e998a5d629f7dbd43110201635a5beb4fee266f))
+
 ## [0.2.0](https://github.com/msegoviadev/api-mind-mcp/compare/v0.1.1...v0.2.0) (2026-04-03)
 
 
