@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.2](https://github.com/msegoviadev/api-mind-mcp/compare/v0.2.1...v0.2.2) (2026-04-03)
+
+
+### Bug Fixes
+
+* add explicit --provenance flag for OIDC auth in CI ([a2bd510](https://github.com/msegoviadev/api-mind-mcp/commit/a2bd5100a87149304f2763695d8aaa3e0b49182a))
+
 ## [0.2.1](https://github.com/msegoviadev/api-mind-mcp/compare/v0.2.0...v0.2.1) (2026-04-03)
 
 
