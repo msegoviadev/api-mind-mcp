@@ -1,6 +1,6 @@
 [tools]
 node = "20"
-npm = "10"
+npm = "11.6.3"
 
 [env]
 _.path = [
