@@ -2,96 +2,56 @@
 
 MCP server for API discovery from `.mind` spec files. Works with Claude Code, Claude Desktop, and any MCP-compatible AI assistant.
 
-## Why
+## Quick Start
 
-LLMs interacting with HTTP APIs need to discover endpoints, understand contracts, and make requests. api-mind provides 3 tools for discovery and context:
+Try it now with example specs:
 
-- **list_apis** - Discover available APIs
-- **list_endpoints** - Find endpoints across APIs
-- **get_endpoint_schema** - Get base URL, auth requirements, and schema
+```bash
+# Use built-in examples (after installation)
+claude mcp add --transport stdio api-mind \
+  -- npx -y @msegoviadev/api-mind-mcp $(pwd)/specs
 
-The LLM then constructs and executes curl commands with full transparency.
+# Or with your own specs
+claude mcp add --transport stdio api-mind \
+  -- npx -y @msegoviadev/api-mind-mcp /absolute/path/to/specs
+```
+
+In Claude Code:
+```
+What APIs are available?
+Show me the endpoints for posts
+Get the schema for GET /posts
+```
+
+---
 
 ## Installation
 
-### Option 1: Command-line argument (Recommended)
+### Prerequisites
+
+Install [spec-mind](https://github.com/msegoviadev/spec-mind) to generate `.mind` files from your OpenAPI specs:
+
+```bash
+npm install -g @msegoviadev/spec-mind
+```
+
+### Install api-mind-mcp
 
 ```bash
 claude mcp add --transport stdio api-mind \
-  -- npx -y @msegoviadev/api-mind-mcp /Users/YOUR/absolute/path/to/specs
+  -- npx -y @msegoviadev/api-mind-mcp /absolute/path/to/specs
 ```
 
-**Important:** Use ABSOLUTE paths. Relative paths are not supported.
+**Important:** 
+- Always use **absolute paths** (MCP servers don't have project context)
+- Use `$(pwd)/specs` to reference your current directory
+- Or use full paths like `/Users/you/projects/your-project/specs`
 
-### Option 2: Environment variable
+---
 
-```bash
-claude mcp add --transport stdio api-mind \
-  --env SPECS_DIR=/Users/YOUR/absolute/path/to/specs \
-  -- npx -y @msegoviadev/api-mind-mcp
-```
+## Usage
 
-### Option 3: Project configuration (Best for Teams)
-
-Create `.mcp.json` in your project root:
-
-```json
-{
-  "mcpServers": {
-    "api-mind": {
-      "command": "npx",
-      "args": ["-y", "@msegoviadev/api-mind-mcp"],
-      "env": {
-        "SPECS_DIR": "/Users/yourname/projects/yourproject/specs"
-      }
-    }
-  }
-}
-```
-
-**Note:** Each team member needs their own `.mcp.json` with their absolute path. Add `.mcp.json` to `.gitignore`.
-
-### Setup Script for Teams
-
-Create `setup-mcp.sh` in your project root:
-
-```bash
-#!/bin/bash
-PROJECT_ROOT="$(cd "$(dirname "$0")" && pwd)"
-claude mcp add --transport stdio --scope project api-mind \
-  --env SPECS_DIR="${PROJECT_ROOT}/specs" \
-  -- npx -y @msegoviadev/api-mind-mcp
-```
-
-Team members run once:
-```bash
-chmod +x setup-mcp.sh
-./setup-mcp.sh
-```
-
-## Local Development
-
-For testing locally:
-
-```bash
-cd /path/to/api-mind-claude
-npm install
-npm run build
-
-# Test with command-line argument
-node dist/index.js /absolute/path/to/specs
-
-# Test with environment variable
-SPECS_DIR=/absolute/path/to/specs node dist/index.js
-
-# Add to Claude Code for testing
-claude mcp add --transport stdio api-mind-dev \
-  -- node /path/to/api-mind-claude/dist/index.js /absolute/path/to/specs
-```
-
-## Setup
-
-### 1. Add OpenAPI specs
+### 1. Add your API specs
 
 ```bash
 mkdir specs
@@ -101,25 +61,50 @@ mkdir specs
 ### 2. Generate .mind files
 
 ```bash
-npm install -g @msegoviadev/spec-mind
-spec-mind sync --no-notation ./specs/
+cd specs
+spec-mind sync --no-notation ./
 ```
 
-### 3. Commit both files
+### 3. Configure with your specs
+
+**From your project directory:**
 
 ```bash
-git add specs/*.yaml specs/*.mind
-git commit -m "Add API specs"
+# Use specs in current directory
+claude mcp add --transport stdio api-mind \
+  -- npx -y @msegoviadev/api-mind-mcp $(pwd)/specs
+
+# Or specify full path
+claude mcp add --transport stdio api-mind \
+  -- npx -y @msegoviadev/api-mind-mcp /Users/you/projects/your-project/specs
 ```
 
-### 4. Configure api-mind
+**Important:** MCP servers require absolute paths. Use `$(pwd)` or full paths, never relative paths like `./specs`.
 
-Use one of the installation methods above to configure the specs directory.
+### 4. Use in Claude Code
+
+```
+User: "What APIs are available?"
+Claude: *uses list_apis tool*
+"Found 2 APIs: ecommerce, payments"
+
+User: "Show me payment endpoints"
+Claude: *uses list_endpoints tool*
+"POST /payments [auth: oauth2]
+ GET /payments/{id}"
+
+User: "Get schema for POST /payments"
+Claude: *uses get_endpoint_schema tool*
+"POST /payments
+Auth: oauth2 payments:write
+Body: CreatePaymentRequest {...}"
+```
+
+---
 
 ## Tools
 
 ### list_apis
-
 Lists all APIs loaded from the specs folder.
 
 ```
@@ -130,20 +115,17 @@ Output: JSON with API names, titles, base URLs, and environments
 Call first to discover what APIs are available.
 
 ### list_endpoints
-
 Lists endpoints across all APIs.
 
 ```
 Input:
   filter (optional): Substring match on method, path, or section
-
 Output: JSON with environments and endpoint list
 ```
 
 Call to find specific endpoints.
 
 ### get_endpoint_schema
-
 Returns full context for an endpoint.
 
 ```
@@ -151,23 +133,12 @@ Input:
   api: API name
   method: HTTP method
   path: Endpoint path
-
 Output: Text block with base URL, environments, auth, and schema
 ```
 
 Call before constructing curl to understand the endpoint.
 
-## Workflow
-
-```
-list_apis → list_endpoints → get_endpoint_schema → [LLM constructs curl] → bash
-```
-
-1. `list_apis` - Discover available APIs
-2. `list_endpoints` - Find relevant endpoints
-3. `get_endpoint_schema` - Get context (URL, auth, schema)
-4. LLM constructs curl command with proper URL and headers
-5. LLM executes via `bash` tool
+---
 
 ## Auth Patterns
 
@@ -181,59 +152,99 @@ When `get_endpoint_schema` shows auth requirements, construct headers:
 | `api_key <header>` | `-H '<header>: <KEY>'` |
 | `basic` | `-H 'Authorization: Basic <base64>'` |
 
+---
+
 ## Why Absolute Paths?
 
 MCP servers run as standalone processes without project context. The working directory may be `/` or a system directory. Unlike plugins that receive project context, MCP servers must receive explicit configuration.
 
 Always use absolute paths when configuring MCP servers.
 
-## Example Usage
+---
 
-Once configured, use the tools directly in Claude Code:
-
-```
-User: "What APIs are available?"
-Claude: *uses list_apis tool*
-"I found 2 APIs loaded:
-1. ecommerce - E-commerce API
-2. payments - Payments API"
-
-User: "Show me the endpoints for creating a payment"
-Claude: *uses list_endpoints tool with filter="payment"*
-"Here are payment endpoints:
-POST /payments [auth: oauth2 payments:write]
-..."
-
-User: "Get the schema for POST /payments"
-Claude: *uses get_endpoint_schema tool*
-"POST /payments
-Auth: oauth2 payments:write
-Body: CreatePaymentRequest {...}
-..."
-```
-
-## NOTATION Legend
-
-The schema uses a compact notation:
+## Workflow
 
 ```
-? optional | [ro] readOnly | [w] writeOnly | =val default
-^ header | ~ cookie | | enum | {*:T} map | ~~name~~ deprecated
+list_apis → list_endpoints → get_endpoint_schema → [LLM constructs curl] → bash
 ```
 
-## Development
+1. `list_apis` - Discover available APIs
+2. `list_endpoints` - Find relevant endpoints
+3. `get_endpoint_schema` - Get context (URL, auth, schema)
+4. LLM constructs curl command with proper URL and headers
+5. LLM executes via `bash` tool
 
-### Build
+---
+
+## Advanced Configuration
+
+<details>
+<summary>For teams and advanced users</summary>
+
+### Environment Variable
 
 ```bash
+claude mcp add --transport stdio api-mind \
+  --env SPECS_DIR=/absolute/path/to/specs \
+  -- npx -y @msegoviadev/api-mind-mcp
+```
+
+### Project Configuration (.mcp.json)
+
+Create `.mcp.json` in your project root:
+
+```json
+{
+  "mcpServers": {
+    "api-mind": {
+      "command": "npx",
+      "args": ["-y", "@msegoviadev/api-mind-mcp"],
+      "env": {
+        "SPECS_DIR": "/absolute/path/to/specs"
+      }
+    }
+  }
+}
+```
+
+**Note:** Each team member needs their own `.mcp.json` with their absolute path. Add `.mcp.json` to `.gitignore`.
+
+### Setup Script (Optional)
+
+For automated team setup, copy `setup-mcp.sh.example` to your project:
+
+```bash
+curl -O https://raw.githubusercontent.com/msegoviadev/api-mind-mcp/main/setup-mcp.sh.example
+mv setup-mcp.sh.example setup-mcp.sh
+chmod +x setup-mcp.sh
+./setup-mcp.sh
+```
+
+The script will:
+- Auto-detect project root
+- Create `specs/` directory
+- Configure Claude Code with absolute paths
+- Check for `.mind` files
+
+</details>
+
+---
+
+## Development (Contributors)
+
+For developing api-mind-mcp itself:
+
+```bash
+git clone https://github.com/msegoviadev/api-mind-mcp
+cd api-mind-mcp
+npm install
 npm run build
+
+# Test locally
+node dist/index.js /path/to/specs
 ```
 
-### Test Locally
-
-```bash
-node dist/index.js /absolute/path/to/specs
-```
+---
 
 ## Related
 

@@ -52,24 +52,32 @@ Use:
     return process.env.SPECS_DIR;
   }
   
-  // Priority 3: No configuration - help user
+  // Priority 3: No configuration - show setup options
   console.error(`
 [api-mind] ERROR: No specs directory configured.
+
+Quick examples:
+
+  # Use your own specs directory
+  claude mcp add api-mind -- npx -y @msegoviadev/api-mind-mcp $(pwd)/specs
+
+  # Or specify full path
+  claude mcp add api-mind -- npx -y @msegoviadev/api-mind-mcp /Users/you/projects/your-project/specs
 
 Setup options:
 
 1. Command-line argument:
-   claude mcp add api-mind -- node dist/index.js /ABSOLUTE/PATH/TO/SPECS
+   claude mcp add api-mind -- npx -y @msegoviadev/api-mind-mcp /ABSOLUTE/PATH/TO/SPECS
 
 2. Environment variable:
-   claude mcp add api-mind --env SPECS_DIR=/ABSOLUTE/PATH/TO/SPECS -- node dist/index.js
+   claude mcp add api-mind --env SPECS_DIR=/ABSOLUTE/PATH/TO/SPECS -- npx -y @msegoviadev/api-mind-mcp
 
 3. Project .mcp.json:
    {
      "mcpServers": {
        "api-mind": {
-         "command": "node",
-         "args": ["/path/to/api-mind-claude/dist/index.js"],
+         "command": "npx",
+         "args": ["-y", "@msegoviadev/api-mind-mcp"],
          "env": { "SPECS_DIR": "/ABSOLUTE/PATH/TO/SPECS" }
        }
      }
