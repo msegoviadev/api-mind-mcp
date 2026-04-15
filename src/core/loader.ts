@@ -112,7 +112,8 @@ export async function listEndpoints(filter?: string): Promise<{ environments: st
   
   if (filter) {
     const lowerFilter = filter.toLowerCase()
-    endpoints = endpoints.filter(ep => 
+    endpoints = endpoints.filter(ep =>
+      ep.api.toLowerCase().includes(lowerFilter) ||
       ep.method.toLowerCase().includes(lowerFilter) ||
       ep.path.toLowerCase().includes(lowerFilter) ||
       ep.section.toLowerCase().includes(lowerFilter)
