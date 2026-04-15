@@ -3,7 +3,7 @@ import type { ParsedApiHeader, ParsedEndpoint } from "./types"
 const API_HEADER_REGEX = /^#\s*API:\s*(.+?)\s*—\s*(.+)$/
 const SERVERS_HEADER_REGEX = /^#\s*Servers:\s*(.+)$/
 const SECTION_HEADER_REGEX = /^##\s+(.+?)\s*$/
-const ENDPOINT_LINE_REGEX = /^(~~)?([A-Z]+)(~~)?\s+(\/[^\s]*?)(\s+\[auth:\s*(.+?)\])?\s*$/
+const ENDPOINT_LINE_REGEX = /^(~~)?([A-Z]+)(~~)?\s+(\/[^\s]*?)(?:\s+\[[^\]:]+\])*(\s+\[auth:\s*(.+?)\])?\s*$/
 const SCHEMA_REF_REGEX = /\b([A-Z][a-zA-Z0-9_]*)\b/g
 
 export function parseApiHeader(content: string): ParsedApiHeader | null {
