@@ -1,4 +1,4 @@
-import type { EndpointIndex, ApiMeta, EndpointEntry, InitOptions, GetEndpointSchemaResult } from "./types"
+import type { EndpointIndex, ApiMeta, EndpointEntry, InitOptions, GetEndpointSchemaResult, CallContextResult } from "./types"
 import { parseApiHeader, parseServers, parseEndpoints } from "./parser"
 
 let indexPromise: Promise<EndpointIndex> | null = null
@@ -154,6 +154,42 @@ export async function getEndpointSchema(api: string, method: string, path: strin
     path,
     auth: endpoint?.auth || null,
     schema: block,
+  }
+}
+
+export async function getCallContext(api: string, env?: string): Promise<CallContextResult> {
+  const index = await getIndex()
+  const apiMeta = index.apis[api]
+
+  if (!apiMeta) {
+    throw new Error(`API "${api}" not found. Available: ${Object.keys(index.apis).join(", ")}`)
+  }
+
+  const homeDir = process.env.HOME || ""
+  const configDir = joinPath(homeDir, ".config", "api-mind")
+  const activeEnv = env ?? "dev"
+  const defaults: Record<string, string> = {}
+
+  try {
+    parseEnvFile(await readFile(joinPath(configDir, `${activeEnv}.env`)), defaults)
+  } catch { /* no base env file */ }
+
+  try {
+    parseEnvFile(await readFile(joinPath(configDir, api, `${activeEnv}.env`)), defaults)
+  } catch { /* no api-specific env file */ }
+
+  const baseUrl = defaults.base_url ?? apiMeta.servers[activeEnv] ?? apiMeta.defaultUrl
+
+  return { api, env: activeEnv, baseUrl, defaults }
+}
+
+function parseEnvFile(content: string, target: Record<string, string>): void {
+  for (const line of content.split("\n")) {
+    const trimmed = line.trim()
+    if (!trimmed || trimmed.startsWith("#")) continue
+    const eqIdx = trimmed.indexOf("=")
+    if (eqIdx === -1) continue
+    target[trimmed.slice(0, eqIdx).trim()] = trimmed.slice(eqIdx + 1).trim()
   }
 }
 

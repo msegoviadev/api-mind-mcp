@@ -61,3 +61,10 @@ export interface GetEndpointSchemaResult {
   auth: string | null
   schema: string
 }
+
+export interface CallContextResult {
+  api: string
+  env: string
+  baseUrl: string
+  defaults: Record<string, string>
+}

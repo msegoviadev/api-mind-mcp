@@ -10,6 +10,7 @@ const { initNodeBindings } = require("./lib/node-bindings.js");
 const { definition: listApisDefinition, handler: listApisHandler } = require("./tools/list-apis.js");
 const { definition: listEndpointsDefinition, handler: listEndpointsHandler } = require("./tools/list-endpoints.js");
 const { definition: getEndpointSchemaDefinition, handler: getEndpointSchemaHandler } = require("./tools/get-endpoint-schema.js");
+const { definition: getCallContextDefinition, handler: getCallContextHandler } = require("./tools/get-call-context.js");
 const { resolve, isAbsolute } = require("path");
 
 // Initialize Node.js bindings for file system operations
@@ -128,6 +129,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
       listApisDefinition,
       listEndpointsDefinition,
       getEndpointSchemaDefinition,
+      getCallContextDefinition,
     ],
   };
 });
@@ -171,7 +173,10 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       
       case "get_endpoint_schema":
         return await getEndpointSchemaHandler(args);
-      
+
+      case "get_call_context":
+        return await getCallContextHandler(args);
+
       default:
         throw new Error(`Unknown tool: ${name}`);
     }

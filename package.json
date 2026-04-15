@@ -44,7 +44,7 @@
   "files": [
     "dist",
     "README.md",
-    "setup-mcp.sh.example"
+    "setup-mcp.sh"
   ],
   "publishConfig": {
     "access": "public",
