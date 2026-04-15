@@ -21,6 +21,7 @@ In Claude Code:
 What APIs are available?
 Show me the endpoints for posts
 Get the schema for GET /posts
+Call GET /posts in dev
 ```
 
 ---
@@ -136,7 +137,20 @@ Input:
 Output: Text block with base URL, environments, auth, and schema
 ```
 
-Call before constructing curl to understand the endpoint.
+Call before constructing curl to understand the endpoint contract.
+
+### get_call_context
+Returns runtime context needed to execute API calls.
+
+```
+Input:
+  api: API name
+  env (optional): Environment to use (dev, stage, uat). Defaults to dev.
+Output: Resolved base URL, active environment, and default values for credentials and parameters
+```
+
+Call this before constructing curl when the user wants to actually invoke an endpoint.
+Reads from `~/.config/api-mind/<env>.env` and `~/.config/api-mind/<api>/<env>.env`.
 
 ---
 
@@ -165,14 +179,40 @@ Always use absolute paths when configuring MCP servers.
 ## Workflow
 
 ```
-list_apis → list_endpoints → get_endpoint_schema → [LLM constructs curl] → bash
+list_apis → list_endpoints → get_endpoint_schema → get_call_context → [LLM constructs curl] → bash
 ```
 
 1. `list_apis` - Discover available APIs
 2. `list_endpoints` - Find relevant endpoints
-3. `get_endpoint_schema` - Get context (URL, auth, schema)
-4. LLM constructs curl command with proper URL and headers
-5. LLM executes via `bash` tool
+3. `get_endpoint_schema` - Get endpoint contract (URL, auth, schema)
+4. `get_call_context` - Resolve base URL and credentials for the target environment
+5. LLM constructs curl command using resolved values
+6. LLM executes via `bash` tool
+
+---
+
+## Environment Defaults
+
+`get_call_context` reads default values from `~/.config/api-mind/`:
+
+```
+~/.config/api-mind/
+  dev.env        # base defaults for all APIs (dev environment)
+  stage.env      # base defaults for stage
+  auth0/
+    dev.env      # API-specific overrides for auth0
+```
+
+Each `.env` file uses `key=value` format (lines starting with `#` are ignored). The `base_url` key overrides the placeholder URL from the spec.
+
+Example `~/.config/api-mind/dev.env`:
+```
+base_url=https://api.dev.example.com
+auth0_client_id=abc123
+auth0_cacert=/etc/ssl/cert.pem
+```
+
+`setup-mcp.sh` scaffolds this file on first run.
 
 ---
 
@@ -209,22 +249,19 @@ Create `.mcp.json` in your project root:
 
 **Note:** Each team member needs their own `.mcp.json` with their absolute path. Add `.mcp.json` to `.gitignore`.
 
-### Setup Script (Optional)
+### Setup Script
 
-For automated team setup, copy `setup-mcp.sh.example` to your project:
+Run `setup-mcp.sh` from your project directory for automated setup:
 
 ```bash
-curl -O https://raw.githubusercontent.com/msegoviadev/api-mind-mcp/main/setup-mcp.sh.example
-mv setup-mcp.sh.example setup-mcp.sh
-chmod +x setup-mcp.sh
-./setup-mcp.sh
+bash setup-mcp.sh          # project scope (default)
+bash setup-mcp.sh --global # user scope (all projects)
 ```
 
-The script will:
-- Auto-detect project root
-- Create `specs/` directory
-- Configure Claude Code with absolute paths
-- Check for `.mind` files
+The script:
+- Registers api-mind in Claude Code with the correct specs path
+- Scaffolds `~/.config/api-mind/dev.env` for environment defaults
+- Supports `--global` for user-wide installation vs per-project
 
 </details>
 
