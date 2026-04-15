@@ -1,6 +1,6 @@
 {
   "name": "@msegoviadev/api-mind-mcp",
-  "version": "0.2.3",
+  "version": "0.3.0",
   "description": "MCP server for API discovery from .mind spec files",
   "main": "./dist/index.js",
   "bin": {

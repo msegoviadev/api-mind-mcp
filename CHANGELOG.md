@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.3.0](https://github.com/msegoviadev/api-mind-mcp/compare/v0.2.3...v0.3.0) (2026-04-15)
+
+
+### Features
+
+* add get_call_context tool and improve setup script ([80ffc90](https://github.com/msegoviadev/api-mind-mcp/commit/80ffc906efbaed25dd9375d59be912c6af9f5d26))
+
+
+### Bug Fixes
+
+* parse endpoints with multiple bracket annotations ([ea50d26](https://github.com/msegoviadev/api-mind-mcp/commit/ea50d2698fb73b79607c3904b5d0de02f29b2abf))
+
 ## [0.2.3](https://github.com/msegoviadev/api-mind-mcp/compare/v0.2.2...v0.2.3) (2026-04-03)
 
 
