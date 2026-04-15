@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.1](https://github.com/msegoviadev/api-mind-mcp/compare/v0.3.0...v0.3.1) (2026-04-15)
+
+
+### Bug Fixes
+
+* include api name in list_endpoints filter ([38e2b08](https://github.com/msegoviadev/api-mind-mcp/commit/38e2b086d449a886974efbc3a888c40e27c1cc1a))
+
 ## [0.3.0](https://github.com/msegoviadev/api-mind-mcp/compare/v0.2.3...v0.3.0) (2026-04-15)
 
 
