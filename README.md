@@ -6,7 +6,7 @@ MCP server for API discovery from `.mind` spec files. Works with Claude Code, Cl
 
 ```bash
 # 1. Install spec-mind to generate .mind files from OpenAPI specs
-npm install -g @msegoviadev/spec-mind
+brew install spec-mind
 
 # 2. Run the setup script from your project directory
 curl -fsSL https://raw.githubusercontent.com/msegoviadev/api-mind-mcp/main/setup-mcp.sh | bash
@@ -35,7 +35,7 @@ Call GET /payments/{id} in dev
 Install [spec-mind](https://github.com/msegoviadev/spec-mind) to generate `.mind` files from your OpenAPI specs:
 
 ```bash
-npm install -g @msegoviadev/spec-mind
+brew install spec-mind
 ```
 
 ### Setup
