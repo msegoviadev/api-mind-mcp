@@ -34,7 +34,7 @@ MIND_FILES=$(find "$SPECS_DIR" -name "*.mind" 2>/dev/null | wc -l | tr -d ' ')
 if [ "$MIND_FILES" -eq 0 ]; then
   echo ""
   echo "No .mind files found in $SPECS_DIR"
-  echo "Generate them with: spec-mind sync --no-notation ./specs/"
+  echo "Generate them with: spec-mind sync --no-notation ${SPECS_DIR}/"
   echo ""
 fi
 
@@ -78,7 +78,7 @@ echo "api-mind configured successfully (scope: $MCP_SCOPE)"
 echo ""
 echo "Next steps:"
 echo "1. Add OpenAPI specs to: ${SPECS_DIR}/"
-echo "2. Generate .mind files: spec-mind sync --no-notation ./specs/"
+echo "2. Generate .mind files: spec-mind sync --no-notation ${SPECS_DIR}/"
 echo "3. Fill in defaults: $CONFIG_DIR/dev.env"
 echo "4. Optionally add global specs (available in all projects): $CONFIG_DIR/specs/"
 echo "5. Restart Claude Code"
