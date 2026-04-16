@@ -11,7 +11,8 @@ const { definition: listApisDefinition, handler: listApisHandler } = require("./
 const { definition: listEndpointsDefinition, handler: listEndpointsHandler } = require("./tools/list-endpoints.js");
 const { definition: getEndpointSchemaDefinition, handler: getEndpointSchemaHandler } = require("./tools/get-endpoint-schema.js");
 const { definition: getCallContextDefinition, handler: getCallContextHandler } = require("./tools/get-call-context.js");
-const { resolve, isAbsolute } = require("path");
+const { resolve, isAbsolute, join } = require("path");
+const { homedir } = require("os");
 
 // Initialize Node.js bindings for file system operations
 initNodeBindings();
@@ -32,7 +33,6 @@ Use absolute path:
 `);
       process.exit(1);
     }
-    console.error(`[api-mind] Specs directory: ${args[0]}`);
     return args[0];
   }
   
@@ -49,7 +49,6 @@ Use:
 `);
       process.exit(1);
     }
-    console.error(`[api-mind] Specs directory: ${process.env.SPECS_DIR}`);
     return process.env.SPECS_DIR;
   }
   
@@ -94,6 +93,9 @@ Docs: https://github.com/msegoviadev/api-mind-mcp
 }
 
 const SPECS_DIR = getSpecsDir();
+const GLOBAL_SPECS_DIR = join(homedir(), ".config", "api-mind", "specs");
+const SPECS_DIRS = [SPECS_DIR, GLOBAL_SPECS_DIR];
+console.error(`[api-mind] Loading specs from: ${SPECS_DIRS.join(", ")}`);
 
 // Create MCP server
 const server = new Server(
@@ -112,7 +114,7 @@ const server = new Server(
 let indexReady = false;
 let indexError = null;
 
-initIndex({ specsDir: SPECS_DIR })
+initIndex({ specsDirs: SPECS_DIRS })
   .then(() => {
     indexReady = true;
     console.error("[api-mind] Index initialized successfully");

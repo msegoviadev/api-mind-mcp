@@ -44,9 +44,16 @@ claude mcp add --transport stdio --scope "$MCP_SCOPE" api-mind \
   --env SPECS_DIR="$SPECS_DIR" \
   -- npx -y @msegoviadev/api-mind-mcp
 
-# Scaffold ~/.config/api-mind/ with example env file
+# Scaffold ~/.config/api-mind/ with example env file and global specs dir
 CONFIG_DIR="$HOME/.config/api-mind"
-mkdir -p "$CONFIG_DIR"
+if [ ! -d "$CONFIG_DIR" ]; then
+  mkdir -p "$CONFIG_DIR"
+  echo "Created: $CONFIG_DIR"
+fi
+if [ ! -d "$CONFIG_DIR/specs" ]; then
+  mkdir "$CONFIG_DIR/specs"
+  echo "Created: $CONFIG_DIR/specs"
+fi
 
 if [ ! -f "$CONFIG_DIR/dev.env" ]; then
   cat > "$CONFIG_DIR/dev.env" << 'EOF'
@@ -73,7 +80,8 @@ echo "Next steps:"
 echo "1. Add OpenAPI specs to: ${SPECS_DIR}/"
 echo "2. Generate .mind files: spec-mind sync --no-notation ./specs/"
 echo "3. Fill in defaults: $CONFIG_DIR/dev.env"
-echo "4. Restart Claude Code"
+echo "4. Optionally add global specs (available in all projects): $CONFIG_DIR/specs/"
+echo "5. Restart Claude Code"
 echo ""
 if ! $GLOBAL; then
   echo "To install globally instead:"

@@ -2,11 +2,11 @@ import type { EndpointIndex, ApiMeta, EndpointEntry, InitOptions, GetEndpointSch
 import { parseApiHeader, parseServers, parseEndpoints } from "./parser"
 
 let indexPromise: Promise<EndpointIndex> | null = null
-let currentSpecsDir: string | null = null
+let currentSpecsDirs: string[] | null = null
 
 export async function initIndex(options: InitOptions): Promise<EndpointIndex> {
-  currentSpecsDir = options.specsDir
-  indexPromise = buildIndex(options.specsDir)
+  currentSpecsDirs = options.specsDirs
+  indexPromise = buildIndex(options.specsDirs)
   return indexPromise
 }
 
@@ -19,22 +19,22 @@ export async function getIndex(): Promise<EndpointIndex> {
 
 export function clearIndex(): void {
   indexPromise = null
-  currentSpecsDir = null
+  currentSpecsDirs = null
 }
 
-export function getSpecsDir(): string | null {
-  return currentSpecsDir
+export function getSpecsDirs(): string[] | null {
+  return currentSpecsDirs
 }
 
 export async function rebuildIndex(): Promise<EndpointIndex> {
-  if (!currentSpecsDir) {
-    throw new Error("No specs directory configured. Call initIndex() first.")
+  if (!currentSpecsDirs) {
+    throw new Error("No specs directories configured. Call initIndex() first.")
   }
-  return initIndex({ specsDir: currentSpecsDir })
+  return initIndex({ specsDirs: currentSpecsDirs })
 }
 
-async function buildIndex(specsDir: string): Promise<EndpointIndex> {
-  const files = await scanMindFiles(specsDir)
+async function buildIndex(specsDirs: string[]): Promise<EndpointIndex> {
+  const files = (await Promise.all(specsDirs.map(scanMindFiles))).flat()
   const apis: Record<string, ApiMeta> = {}
   const allEndpoints: EndpointEntry[] = []
   const allEnvironments = new Set<string>()

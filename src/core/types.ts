@@ -36,7 +36,7 @@ export interface ListEndpointsResult {
 }
 
 export interface InitOptions {
-  specsDir: string
+  specsDirs: string[]
 }
 
 export interface ParsedApiHeader {
