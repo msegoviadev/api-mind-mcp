@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.4.0](https://github.com/msegoviadev/api-mind-mcp/compare/v0.3.1...v0.4.0) (2026-04-16)
+
+
+### Features
+
+* always load global specs from ~/.config/api-mind/specs/ ([51bce72](https://github.com/msegoviadev/api-mind-mcp/commit/51bce7254cce1873c3ff1c78b0e2bf90c689f8f5))
+
+
+### Bug Fixes
+
+* use SPECS_DIR variable in spec-mind sync instructions ([bac3dd4](https://github.com/msegoviadev/api-mind-mcp/commit/bac3dd4eacff9196cce3fa0a7758d7a9a461bb04))
+
 ## [0.3.1](https://github.com/msegoviadev/api-mind-mcp/compare/v0.3.0...v0.3.1) (2026-04-15)
 
 
